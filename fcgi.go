@@ -21,33 +21,21 @@ type fcgiConfig struct {
 	HttpPipSave string `json:"HttpPipSave"`
 	
 	HttpPipValidate string `json:"HttpPipValidate"`
-	//ScriptFileNameNameValidate string `json:"fcgi_script_filename_validate"`
-	// "tcp" or "unix"
-	ConnectionType string `json:"fcgi_connection_type"`
-	// where to Dial, eg "/tmp/php-fpm.sock" for unix-socket or "127.0.0.1:9000" for tcp
-	ConnectionAddress string `json:"fcgi_connection_address"`
+	
 }
 
 type FastCGIProcessor struct {
 	config *fcgiConfig
-	client *fcgiclient.FCGIClient
 }
 
 func newFastCGIProcessor(config *fcgiConfig) (*FastCGIProcessor, error) {
 	p := &FastCGIProcessor{}
 	p.config = config
-	err := p.connect()
-	if err != nil {
-		backends.Log().Debug("FastCgi error", err)
-		return p, err
-	}
+	
 	return p, err
 }
 
-func (f *FastCGIProcessor) connect() (err error) {
-	f.client, err = fcgiclient.Dial(f.config.ConnectionType, f.config.ConnectionAddress)
-	return err
-}
+
 
 // get sends a get query to script with q query values
 func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err error) {
