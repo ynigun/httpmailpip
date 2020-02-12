@@ -73,6 +73,8 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 		data.Set(fmt.Sprintf("rcpt_to_%d", i), e.RcptTo[i].String())
 	}
 	data.Set("remote_ip", e.RemoteIP)
+		data.Set("subject2", email.Subject)
+
 	data.Set("subject", e.Subject)
 	data.Set("tls_on", strconv.FormatBool(e.TLS))
 	data.Set("helo", e.Helo)
