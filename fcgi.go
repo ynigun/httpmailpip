@@ -53,8 +53,7 @@ func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err 
 
 func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error) {
 	
-	apiUrl := f.config.HttpPipSave
-	resource := "/user/"
+	//resource := "/user/"
 	var reader io.Reader
 	// this reads an email message
 	reader = &e.Data
@@ -80,10 +79,12 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	data.Set("helo", e.Helo)
 	data.Set("mail_from", e.MailFrom.String())
 	data.Set("body", email.HTMLBody)
-	data.Set("data", e.String())
+	data.Set("data", e.Data.String())
+
+	apiUrl := f.config.HttpPipSave
 
 	u, _ := url.ParseRequestURI(apiUrl)
-	u.Path = resource
+	//u.Path = resource
 	urlStr := u.String() 
 
 	client := &http.Client{}
