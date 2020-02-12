@@ -80,6 +80,8 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	data.Set("helo", e.Helo)
 	data.Set("mail_from", e.MailFrom.String())
 	data.Set("body", email.HTMLBody)
+	data.Set("data", e.String())
+
 	u, _ := url.ParseRequestURI(apiUrl)
 	u.Path = resource
 	urlStr := u.String() 
