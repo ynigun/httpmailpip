@@ -61,6 +61,7 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	if err != nil {
 		// handle error
 	}
+	
 	/*
 	   fmt.Println(email.Subject)
 	   fmt.Println(email.From)
@@ -71,15 +72,19 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	for i := range e.RcptTo {
 		data.Set(fmt.Sprintf("rcpt_to_%d", i), e.RcptTo[i].String())
 	}
+	for _, a := range(email.Attachments) {
+				data.Set(fmt.Sprintf("Filename_%d", i), a.Filename)
+		data.Set(fmt.Sprintf("ContentType_%d", i), a.ContentType)
+}
 	data.Set("remote_ip", e.RemoteIP)
-		data.Set("subject2", email.Subject)
+	//	data.Set("subject2", email.Subject)
 
 	data.Set("subject", e.Subject)
 	data.Set("tls_on", strconv.FormatBool(e.TLS))
 	data.Set("helo", e.Helo)
 	data.Set("mail_from", e.MailFrom.String())
 	data.Set("body", email.HTMLBody)
-	data.Set("data", e.Data.String())
+	//data.Set("data", e.Data.String())
 
 	apiUrl := f.config.HttpPipSave
 
