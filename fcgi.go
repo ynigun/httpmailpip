@@ -17,12 +17,9 @@ import (
 )
 
 type fcgiConfig struct {
-	// full path to script for the save mail task
-	// eg. /home/user/scripts/save.php
-	//ScriptFileNameNameSave string `json:"fcgi_script_filename_save"`
+	
 	HttpPipSave string `json:"HttpPipSave"`
-	// full path to script for recipient validation
-	// eg /home/user/scripts/val_rcpt.php
+	
 	HttpPipValidate string `json:"HttpPipValidate"`
 	//ScriptFileNameNameValidate string `json:"fcgi_script_filename_validate"`
 	// "tcp" or "unix"
@@ -55,14 +52,9 @@ func (f *FastCGIProcessor) connect() (err error) {
 
 // get sends a get query to script with q query values
 func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err error) {
-	//result, err = exec.Command("gorun", "/root/pipmail.go").Output()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	url := fmt.Sprintf("%s?validate=1", f.config.HttpPipValidate)
-	//url := fmt.Sprintf("http://51.15.47.193:8090/test")
+	
+	url := fmt.Sprintf("%s?validate=2", f.config.HttpPipValidate)
 	resp, _ := http.Get(url)
-	//		resp, _ := http.Get("http://51.15.47.193:8090/ppp/")
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -75,17 +67,7 @@ func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err 
 }
 
 func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error) {
-	//cmd := result
-	/*env["remote_ip"] = e.RemoteIP
-	env["subject"] = e.Subject
-	env["helo"] = e.Helo
-	env["mail_from"] = e.MailFrom.String()
-	env["body"] = e.String()
-	*/
-	//datatest := fmt.Sprintf("body=%q", e.Data.String())
-	/*if err := e.ParseHeaders(); err != nil && err != io.EOF {
-		backends.Log().Debug("err", err)
-	}*/
+	
 	apiUrl := f.config.HttpPipSave
 	resource := "/user/"
 	var reader io.Reader
@@ -101,7 +83,6 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	   fmt.Println(email.To)
 	   fmt.Println(email.HTMLBody)
 	*/data := url.Values{}
-	//data.Set("surname", "bar")
 
 	for i := range e.RcptTo {
 		data.Set(fmt.Sprintf("rcpt_to_%d", i), e.RcptTo[i].String())
@@ -114,7 +95,7 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	data.Set("body", email.HTMLBody)
 	u, _ := url.ParseRequestURI(apiUrl)
 	u.Path = resource
-	urlStr := u.String() // "https://api.com/user/"
+	urlStr := u.String() 
 
 	client := &http.Client{}
 	r, _ := http.NewRequest("POST", urlStr, strings.NewReader(data.Encode())) // URL-encoded payload
@@ -123,15 +104,9 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 
 	resp, _ := client.Do(r)
 	fmt.Println(resp.Status)
-	//	url := fmt.Sprintf("%s?body=%q", f.config.HttpPipSave, e.String())
-	//	backends.Log().Debug("la", url)
-	//	//backends.Log().Debug("data", e.Data.String())
-	//	//url := fmt.Sprintf("http://51.15.47.193:8090/test")
-	//	resp, _ := http.Get(url)
-	//	defer resp.Body.Close()
+	
 	body, _ := ioutil.ReadAll(resp.Body)
-	//
-	//	fmt.Print(string(body))
+	
 	result = body
 	return result, nil
 }
@@ -162,7 +137,6 @@ var Processor = func() backends.Decorator {
 		// test the settings
 		v := url.Values{}
 		v.Set("rcpt_to", "test@example.com")
-		backends.Log().Info("testing script:", p.config.HttpPipValidate)
 		result, err := p.get(p.config.HttpPipValidate, v)
 		if err != nil {
 			backends.Log().WithError(err).Error("could get fcgi to work")
@@ -195,7 +169,6 @@ var Processor = func() backends.Decorator {
 							backends.StorageNotAvailable
 					}
 
-					backends.Log().Debug("FastCgi  Read Body ", string(result))
 
 					if string(result[0:6]) == "PASSED" {
 						// validation passed
