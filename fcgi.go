@@ -72,9 +72,9 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	for i := range e.RcptTo {
 		data.Set(fmt.Sprintf("rcpt_to_%d", i), e.RcptTo[i].String())
 	}
-	for _, a := range(email.Attachments) {
-				data.Set(fmt.Sprintf("Filename_%d", i), a.Filename)
-		data.Set(fmt.Sprintf("ContentType_%d", i), a.ContentType)
+	for z, a := range(email.Attachments) {
+				data.Set(fmt.Sprintf("Filename_%d",z), a.Filename)
+		data.Set(fmt.Sprintf("ContentType_%d", z), a.ContentType)
 }
 	data.Set("remote_ip", e.RemoteIP)
 	//	data.Set("subject2", email.Subject)
