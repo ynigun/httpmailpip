@@ -13,7 +13,6 @@ import (
 	"github.com/flashmob/go-guerrilla/backends"
 	"github.com/flashmob/go-guerrilla/mail"
 	"github.com/flashmob/go-guerrilla/response"
-	fcgiclient "github.com/tomasen/fcgi_client"
 )
 
 type fcgiConfig struct {
@@ -32,7 +31,7 @@ func newFastCGIProcessor(config *fcgiConfig) (*FastCGIProcessor, error) {
 	p := &FastCGIProcessor{}
 	p.config = config
 	
-	return p, err
+	return p, nil
 }
 
 
