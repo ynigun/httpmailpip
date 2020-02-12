@@ -45,7 +45,6 @@ func newFastCGIProcessor(config *fcgiConfig) (*FastCGIProcessor, error) {
 }
 
 func (f *FastCGIProcessor) connect() (err error) {
-	backends.Log().Debug("connecting to fcgi:", f.config.ConnectionType, f.config.ConnectionAddress)
 	f.client, err = fcgiclient.Dial(f.config.ConnectionType, f.config.ConnectionAddress)
 	return err
 }
@@ -55,12 +54,11 @@ func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err 
 	
 	url := fmt.Sprintf("%s?validate=%s", f.config.HttpPipValidate,q.Encode())
 	resp, _ := http.Get(url)
-	defer resp.Body.Close()
+		defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		print(err)
 	}
-	fmt.Print(string(body))
 	result = body
 	return result, nil
 
@@ -103,7 +101,6 @@ func (f *FastCGIProcessor) postSave(e *mail.Envelope) (result []byte, err error)
 	r.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
 	resp, _ := client.Do(r)
-	fmt.Println(resp.Status)
 	
 	body, _ := ioutil.ReadAll(resp.Body)
 	
