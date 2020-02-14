@@ -39,7 +39,7 @@ func newFastCGIProcessor(config *fcgiConfig) (*FastCGIProcessor, error) {
 // get sends a get query to script with q query values
 func (f *FastCGIProcessor) get(script string, q url.Values) (result []byte, err error) {
 	
-	url := fmt.Sprintf("%s?validate=%s", f.config.HttpPipValidate,q.Encode())
+	url := fmt.Sprintf("%s?%s", f.config.HttpPipValidate,q.Encode())
 	resp, _ := http.Get(url)
 		defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
